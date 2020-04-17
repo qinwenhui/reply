@@ -24,6 +24,6 @@ public class UserController {
     @RequestMapping("/test")
     @ResponseBody
     public String test(){
-        return "test";
+        return "{id:'P161713309', name:'覃文辉'}";
     }
 }
