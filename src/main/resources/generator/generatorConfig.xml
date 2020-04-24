@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--generatorConfig.xml文件，命名必须是这个名字-->
+
+
+    <properties resource="generator/jdbc.properties"/>
+
+    <!--<classPathEntry location="D:\qwh\学习\java\SSH-SSM\spring\spring导入的基本jar包\mysql-connector-java-5.1.39-bin.jar"/>-->
+
+    <!--MyBatis3Simple表示不生成Example，flat表示一张表生成一个POJO-->
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <!-- 增加实体类Serializable实现 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+
+        <!--引入通用mapper的支持-->
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+            <property name="caseSensitive" value="true"/>
+        </plugin>
+
+        <jdbcConnection driverClass="${jdbc.driver}"
+                        connectionURL="${jdbc.url}"
+                        userId="${jdbc.username}"
+                        password="${jdbc.password}">
+        </jdbcConnection>
+
+        <!--java 代码方式生成时，不能引用其他配置-->
+        <!--<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"-->
+        <!--connectionURL="jdbc:mysql://localhost:3306/test?useUnicode=true"-->
+        <!--userId="root"-->
+        <!--password="12345678">-->
+        <!--</jdbcConnection>-->
+
+        <javaModelGenerator targetPackage="cn.qinwh.reply.pojo" targetProject="src/main/java"/>
+
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
+
+        <javaClientGenerator targetPackage="cn.qinwh.reply.mapper" targetProject="src/main/java"
+                             type="XMLMAPPER"/>
+
+        <table tableName="admin" domainObjectName="Admin" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+            <!--添加属性useActualColumnNames为true,那么生成的对象字段就跟表一样-->
+            <property name="useActualColumnNames" value="true"/>
+        </table>
+        <table tableName="user" domainObjectName="User" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="appinfo" domainObjectName="Appinfo" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="class" domainObjectName="Clazz" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="feedback" domainObjectName="Feedback" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="institute" domainObjectName="Institute" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="major" domainObjectName="Major" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="message" domainObjectName="Message" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="permission" domainObjectName="Permission" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="proposal" domainObjectName="Proposal" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="proposal_reply" domainObjectName="ProposalReply" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="question" domainObjectName="Question" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="replygroup" domainObjectName="Replygroup" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="replygroup_student" domainObjectName="ReplygroupStudent" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="replygroup_teacher" domainObjectName="ReplygroupTeacher" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="replyinfo" domainObjectName="Replyinfo" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="role" domainObjectName="Role" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="role_permission" domainObjectName="RolePermission" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="score" domainObjectName="Score" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="user_login_log" domainObjectName="UserLoginLog" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="user_role" domainObjectName="UserRole" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+
+    </context>
+</generatorConfiguration>
