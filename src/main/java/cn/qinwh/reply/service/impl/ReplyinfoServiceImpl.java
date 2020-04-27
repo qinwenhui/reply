@@ -57,6 +57,15 @@ public class ReplyinfoServiceImpl extends BaseServiceImpl<Replyinfo> implements 
                 }
             }
         }
+        //判断答辩中的答辩日期是否在当前时间之前，仅限还未开始的答辩（status=0）
+        Date current = new Date();
+        if(replyinfo.getStatus() == 0 && replyinfo.getReplyTime().before(current)){
+            //答辩时间在当前时间之前，所以现在是答辩期间，修改答辩信息的状态
+            replyinfo.setStatus(1);
+            //保存到持久化层
+            replyinfoMapper.updateByPrimaryKeySelective(replyinfo);
+        }
+        //封装数据到Vo对象
         replyinfoVo.setReplyinfo(replyinfo);
         //获取和答辩信息关联的其他信息
         user = userMapper.selectByPrimaryKey(replyinfo.getUserId());
@@ -65,6 +74,10 @@ public class ReplyinfoServiceImpl extends BaseServiceImpl<Replyinfo> implements 
         replyinfoVo.setQuestion(question);
         Score score = scoreMapper.selectByPrimaryKey(replyinfo.getScoreId());
         replyinfoVo.setScorePo(score);
+        //检测答辩成绩是否公开
+        if(replyinfoVo.getScoreStatus() == 0){
+            replyinfoVo.setScore(null);
+        }
         return replyinfoVo;
     }
 

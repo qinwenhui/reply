@@ -1,6 +1,8 @@
 package cn.qinwh.reply.controller;
 
+import cn.qinwh.reply.pojo.Clazz;
 import cn.qinwh.reply.pojo.User;
+import cn.qinwh.reply.service.ClazzService;
 import cn.qinwh.reply.service.UserService;
 import cn.qinwh.reply.utils.BaseJson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -17,6 +20,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    ClazzService clazzService;
 
 
     /**
@@ -73,11 +78,24 @@ public class UserController {
         return json;
     }
 
+    @RequestMapping("/getCurrentUserClass")
+    @ResponseBody
+    public BaseJson getCurrentUserClass(@RequestHeader(value="Token") String token){
+        BaseJson json = new BaseJson(1, "获取用户班级信息失败", null);
+        if(token.equals("abc")){
+            User user = userService.queryByPrimaryKey(1);
+            Clazz clazz = clazzService.queryByPrimaryKey(user.getClassId());
+            if(clazz != null){
+                json = new BaseJson(0, "获取班级信息成功", clazz);
+            }
+        }
+        return json;
+    }
 
     @RequestMapping("/test")
     @ResponseBody
-    public BaseJson test(){
-
+    public BaseJson test(Date a){
+        System .out.println(a);
         BaseJson json = null;
         List<cn.qinwh.reply.pojo.User> users = userService.queryAll();
         json = new BaseJson(1, "成功", users);
