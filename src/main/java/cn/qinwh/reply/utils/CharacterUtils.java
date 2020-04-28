@@ -1,5 +1,7 @@
 package cn.qinwh.reply.utils;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /*
@@ -11,7 +13,12 @@ public class CharacterUtils {
 		// 定义一个字符串（A-Z，a-z，0-9）即62位；
 		String str = "zxcvbnmlkjhgfdsaqwertyuiopQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 		// 由Random生成随机数
-		Random random = new Random();
+		Random random = null;
+		try {
+			random = SecureRandom.getInstanceStrong();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		StringBuffer sb = new StringBuffer();
 		// 长度为几就循环几次
 		for (int i = 0; i < length; ++i) {

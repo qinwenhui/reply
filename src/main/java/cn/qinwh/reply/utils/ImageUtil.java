@@ -42,7 +42,7 @@ public class ImageUtil {
 		// 4.绘制矩形背景
 		graphic.fillRect(0, 0, WIDTH, HEIGHT);
 		// 5.画随机字符
-		Random ran = new Random();
+		Random ran = SecureRandom.getInstanceStrong();
 		for (int i = 0; i < SIZE; i++) {
 			// 取随机字符索引
 			int n = ran.nextInt(chars.length);
