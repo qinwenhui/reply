@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /*
@@ -29,7 +31,7 @@ public class ImageUtil {
 	/**
 	 * 生成随机验证码及图片 Object[0]：验证码字符串； Object[1]：验证码图片。
 	 */
-	public static Object[] createImage() {
+	public static Object[] createImage() throws NoSuchAlgorithmException {
 		StringBuffer sb = new StringBuffer();
 		// 1.创建空白图片
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -67,8 +69,8 @@ public class ImageUtil {
 	/**
 	 * 随机取色
 	 */
-	public static Color getRandomColor() {
-		Random ran = new Random();
+	public static Color getRandomColor() throws NoSuchAlgorithmException {
+		Random ran = SecureRandom.getInstanceStrong();
 		Color color = new Color(ran.nextInt(256), ran.nextInt(256), ran.nextInt(256));
 		return color;
 	}
