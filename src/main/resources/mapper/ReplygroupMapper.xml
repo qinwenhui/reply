@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qinwh.reply.mapper.ReplygroupMapper">
+  <resultMap id="BaseResultMap" type="cn.qinwh.reply.pojo.Replygroup">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="leader_id" jdbcType="INTEGER" property="leaderId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
+    <result column="remarks" jdbcType="LONGVARCHAR" property="remarks" />
+  </resultMap>
+</mapper>

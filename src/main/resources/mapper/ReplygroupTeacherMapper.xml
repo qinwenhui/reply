@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qinwh.reply.mapper.ReplygroupTeacherMapper">
+  <resultMap id="BaseResultMap" type="cn.qinwh.reply.pojo.ReplygroupTeacher">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="replygroup_id" jdbcType="INTEGER" property="replygroupId" />
+    <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+  </resultMap>
+</mapper>

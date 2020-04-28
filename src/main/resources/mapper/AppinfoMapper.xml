@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qinwh.reply.mapper.AppinfoMapper">
+  <resultMap id="BaseResultMap" type="cn.qinwh.reply.pojo.Appinfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="Id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="startup_image" jdbcType="VARCHAR" property="startupImage" />
+    <result column="download" jdbcType="VARCHAR" property="download" />
+    <result column="version" jdbcType="REAL" property="version" />
+  </resultMap>
+</mapper>
