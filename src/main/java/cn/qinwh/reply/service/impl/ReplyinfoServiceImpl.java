@@ -41,6 +41,7 @@ public class ReplyinfoServiceImpl extends BaseServiceImpl<Replyinfo> implements 
         Replyinfo replyinfo = new Replyinfo();
         replyinfo.setUserId(user.getId());
         List<Replyinfo> replyinfoList = replyinfoMapper.select(replyinfo);
+        System.out.println(user.getId()+"-------------"+replyinfoList.size());
         if(replyinfoList.isEmpty()){
             //该用户不存在答辩信息
             return null;

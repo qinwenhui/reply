@@ -19,4 +19,16 @@
     <result column="number" jdbcType="VARCHAR" property="number" />
     <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
+
+  <insert id="insertUser" parameterType="cn.qinwh.reply.pojo.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into user (username, password, name, mobile_phone, role_id, number, type) values (
+    #{username},
+    #{password},
+    #{name},
+    #{mobilePhone},
+    #{roleId},
+    #{number},
+    #{type}
+    )
+  </insert>
 </mapper>

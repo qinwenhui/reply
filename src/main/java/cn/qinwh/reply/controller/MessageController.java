@@ -1,8 +1,18 @@
 package cn.qinwh.reply.controller;
 
+import cn.qinwh.reply.pojo.Message;
+import cn.qinwh.reply.pojo.User;
+import cn.qinwh.reply.pojo.vo.MessageVo;
+import cn.qinwh.reply.service.MessageService;
+import cn.qinwh.reply.utils.BaseJson;
+import cn.qinwh.reply.utils.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @program: reply
@@ -14,14 +24,47 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/message")
 public class MessageController {
 
+    @Autowired
+    RedisUtil redisUtil;
+
+    @Autowired
+    MessageService messageService;
+
     @RequestMapping("/getSelfMessageList")
     @ResponseBody
-    public String getSelfMessageList() {
-//        return "[" +
-//                "{\"id\":1,\"img\":\"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1587218052432&di=9a34bf8d906d52605b6a45f6c4f9ec0e&imgtype=0&src=http%3A%2F%2Fpic1.zhimg.com%2F50%2Fv2-2f3dfd6f7da18983fd5a4e48747d7ee3_hd.jpg\", \"name\":\"答辩组长\", \"content\":\"你的论文怎么还没打印？等下就开始答辩了，请快点打印并提交到答辩小组！\", \"date\":\"2020-04-18 18:16:37\", \"status\":0}," +
-//                "{\"id\":2,\"img\":\"https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1587207908&di=cde189b5dc1c382bce102fdcc2ac50b1&src=http://a3.att.hudong.com/14/75/01300000164186121366756803686.jpg\", \"name\":\"系统通知\", \"content\":\"您的答辩即将开始，详情请查看答辩信息。\", \"date\":\"2020-04-17 20:12:46\", \"status\":1}," +
-//                "{\"id\":5,\"img\":\"http://00imgmini.eastday.com/mobile/20180929/20180929145811_6be4201c978e69dac9a26201b1191274_3.jpeg\", \"name\":\"指导老师\", \"content\":\"有什么问题请及时反馈给我\", \"date\":\"2020-04-10 10:52:46\", \"status\":1}" +
-//                "]";
-        return "[]";
+    public BaseJson getSelfMessageList(HttpServletRequest request) {
+        BaseJson json = new BaseJson(1, "查询失败", null);
+        //获取当前用户
+        User user = (User) request.getAttribute("user");
+        if(user != null){
+            Message where = new Message();
+            where.setReceiverId(user.getId());
+            List<MessageVo> messageVoList = messageService.queryMessageVoByWhere(where);
+            json = new BaseJson(0, "查询成功", messageVoList);
+        }
+        return json;
+    }
+
+    @RequestMapping("/updateMessage")
+    @ResponseBody
+    public BaseJson updateMessage(Message message) {
+        BaseJson json = new BaseJson(1, "更新失败", null);
+        if(messageService.updateSelective(message) > 0){
+            json = new BaseJson(0, "更新成功", null);
+        }
+        return json;
+    }
+
+    @RequestMapping("/sendMessage")
+    @ResponseBody
+    public BaseJson sendMessage(HttpServletRequest request, Message message) {
+        BaseJson json = new BaseJson(1, "发送失败", null);
+        //获取当前用户
+        User user = (User) request.getAttribute("user");
+        message.setSenderId(user.getId());
+        if(messageService.saveSelect(message) > 0){
+            json = new BaseJson(0, "发送成功", message);
+        }
+        return json;
     }
 }

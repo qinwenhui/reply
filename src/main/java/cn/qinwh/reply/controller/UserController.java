@@ -5,12 +5,16 @@ import cn.qinwh.reply.pojo.User;
 import cn.qinwh.reply.service.ClazzService;
 import cn.qinwh.reply.service.UserService;
 import cn.qinwh.reply.utils.BaseJson;
+import cn.qinwh.reply.utils.CharacterUtils;
+import cn.qinwh.reply.utils.ConstUtil;
+import cn.qinwh.reply.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -23,31 +27,24 @@ public class UserController {
     @Autowired
     ClazzService clazzService;
 
-
-    /**
-    * @Description: 
-    * @Param: [name]
-    * @return: java.lang.String
-    * @Author: qinwh
-    * @Date: 2020/4/15
-    */
-    @RequestMapping("/hello")
-    @ResponseBody
-    public String hello(String name){
-        return "hello " + name;
-    }
-
     @RequestMapping("/getUserInfo")
     @ResponseBody
-    public BaseJson getUserInfo(@RequestHeader(value="Token") String token){
-        //假设权限拦截器拦截到token，并且和redis确认了输入某个学生的请求，从redis中获取该学生的id
+    public BaseJson getUserInfo(HttpServletRequest request){
+        //从request域中获取user
+        User requestUser = (User) request.getAttribute("user");
         BaseJson json = new BaseJson(1, "获取用户信息失败", null);
-        if(token.equals("abc")){
-            User user = userService.queryByPrimaryKey(1);
-            user.setToken(token);
-            if(token.equals(user.getToken())){
-                json = new BaseJson(0, "获取用户信息成功", user);
-            }
+        User user = userService.queryByPrimaryKey(requestUser.getId());
+        json = new BaseJson(0, "获取用户信息成功", user);
+        return json;
+    }
+
+    @RequestMapping("/getUserInfoById")
+    @ResponseBody
+    public BaseJson getUserInfoById(Integer id){
+        BaseJson json = new BaseJson(1, "获取用户信息失败", null);
+        User user = userService.queryByPrimaryKey(id);
+        if(user != null){
+            json = new BaseJson(0, "获取用户信息成功", user);
         }
         return json;
     }
@@ -55,10 +52,13 @@ public class UserController {
     @RequestMapping("/login")
     @ResponseBody
     public BaseJson login(User loginUser){
-        BaseJson json = new BaseJson(1, "登录失败", null);;
+        BaseJson json = new BaseJson(1, "登录失败", null);
         User user = userService.login(loginUser);
         if(user != null){
-            user.setToken("abc");
+            String token = CharacterUtils.getRandomString(32)+"-"+user.getId();
+            user.setToken(token);
+            //存入redis
+            RedisUtil.set(token, user, ConstUtil.TOKEN_SAVE_TIME);
             json = new BaseJson(0, "登录成功", user);
         }
         return json;
@@ -73,21 +73,54 @@ public class UserController {
             //账号已存在
             json = new BaseJson(1, "账号已存在", null);
         }else{
-            json = new BaseJson(1, "注册成功", newUser);
+            //注册成功,生成token放入redis
+            String token = CharacterUtils.getRandomString(32)+"-"+newUser.getId();
+            user.setToken(token);
+            //存入redis
+            RedisUtil.set(token, user, ConstUtil.TOKEN_SAVE_TIME);
+            json = new BaseJson(0, "注册成功", newUser);
         }
         return json;
     }
 
     @RequestMapping("/getCurrentUserClass")
     @ResponseBody
-    public BaseJson getCurrentUserClass(@RequestHeader(value="Token") String token){
+    public BaseJson getCurrentUserClass(HttpServletRequest request){
+        User requestUser = (User) request.getAttribute("user");
         BaseJson json = new BaseJson(1, "获取用户班级信息失败", null);
-        if(token.equals("abc")){
-            User user = userService.queryByPrimaryKey(1);
-            Clazz clazz = clazzService.queryByPrimaryKey(user.getClassId());
-            if(clazz != null){
-                json = new BaseJson(0, "获取班级信息成功", clazz);
-            }
+        User user = userService.queryByPrimaryKey(requestUser.getId());
+        Clazz clazz = clazzService.queryByPrimaryKey(user.getClassId());
+        if(clazz != null){
+            json = new BaseJson(0, "获取班级信息成功", clazz);
+        }
+        return json;
+    }
+
+    @RequestMapping("/updateUser")
+    @ResponseBody
+    public BaseJson updateUser(User user){
+        BaseJson json = new BaseJson(1, "修改失败", null);
+        if(userService.updateSelective(user) >0 ){
+            json = new BaseJson(0, "修改成功", null);
+        }
+        return json;
+    }
+    
+    /**
+    * @Description: 修改当前登录用户的信息
+    * @Param: [request, user]
+    * @return: cn.qinwh.reply.utils.BaseJson
+    * @Author: qinwh
+    * @Date: 2020/5/9
+    */
+    @RequestMapping("/updateCurrentUser")
+    @ResponseBody
+    public BaseJson updateCurrentUser(HttpServletRequest request, User user){
+        User requestUser = (User) request.getAttribute("user");
+        user.setId(requestUser.getId());
+        BaseJson json =  new BaseJson(1, "修改失败", null);
+        if(userService.updateSelective(user) >0 ){
+            json = new BaseJson(0, "修改成功", null);
         }
         return json;
     }
@@ -95,10 +128,13 @@ public class UserController {
     @RequestMapping("/test")
     @ResponseBody
     public BaseJson test(Date a){
-        System .out.println(a);
         BaseJson json = null;
-        List<cn.qinwh.reply.pojo.User> users = userService.queryAll();
-        json = new BaseJson(1, "成功", users);
+        User user = new User();
+        user.setId(1);
+        user.setUsername("abc");
+        RedisUtil.set("a", user, 60l);
+        User aa = RedisUtil.get("a", User.class);
+        System .out.println(aa.getUsername());
         return json;
     }
 }

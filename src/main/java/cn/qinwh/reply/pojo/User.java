@@ -7,6 +7,8 @@ import javax.persistence.*;
 @Table(name = "user")
 public class User implements Serializable {
     @Id
+    //@GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(generator = "JDBC")
     private Integer id;
 
     /**

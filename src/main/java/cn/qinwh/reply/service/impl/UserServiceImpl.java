@@ -30,8 +30,13 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
             User resultUser = userMapper.selectOneByExample(example);
             if(resultUser == null){
                 //不存在该账号，可以注册
-                int id = userMapper.insertSelective(user);
-                newUser = userMapper.selectByPrimaryKey(id);
+                switch (user.getType()){
+                    case 0: user.setRoleId(3);break;
+                    case 1: user.setRoleId(2);break;
+                }
+                if(userMapper.insertSelective(user) == 1){
+                    newUser = user;
+                }
             }
         }
         return newUser;
